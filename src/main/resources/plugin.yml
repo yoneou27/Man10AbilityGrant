@@ -2,11 +2,5 @@ name: Man10AbilityGrant
 version: ${project.version}
 main: yoneyone.yone.yo.man10abilitygrant.Man10AbilityGrant
 commands:
-  magg:
-    description: 効果を隠したり見えるようにしたりするコマンドです
   mag:
-    description: maggコマンドに必要な引数の詳細を見るコマンドです
-  magp:
-    description: ほかプレイヤーを指定して、コマンドをmaggコマンドを実行するコマンドです
-  magi:
-    description: ほかプレイヤーのアイテムと耐久値を指定して対象のアイテムにmaggコマンドを実行するコマンドです
+    description: main command

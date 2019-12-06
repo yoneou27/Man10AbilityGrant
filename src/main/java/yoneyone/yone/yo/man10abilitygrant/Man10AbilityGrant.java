@@ -19,7 +19,6 @@ public final class Man10AbilityGrant extends JavaPlugin {
     @Override
     public void onEnable() {
         // Plugin startup logic
-
     }
 
     @Override
@@ -27,14 +26,46 @@ public final class Man10AbilityGrant extends JavaPlugin {
         // Plugin shutdown logic
     }
 
+
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+        if (!label.equals("mag")){
+            sender.sendMessage("そのコマンドはないはずです、製作者に問い合わせてください");
+            return true;
+        }
+        if (args.length == 0){
+            onCommandSub(sender,command,"mag",args);
+            return true;
+        }
+        String[] args2 = new String[args.length - 1];
+        System.arraycopy(args, 1, args2, 0, args.length - 1);
+        switch (args[0]){
+            case "go":
+                onCommandSub(sender,command,"magg",args2);
+                break;
+            case "player":
+                onCommandSub(sender,command,"magp",args2);
+                break;
+            case "id":
+                onCommandSub(sender,command,"magi",args2);
+                break;
+            default:
+                onCommandSub(sender,command,"mag",args2);
+        }
+        return true;
+    }
+
+    private void onCommandSub(CommandSender sender, Command command, String label, String[] args) {
         //事前準備終了
+        if (!sender.hasPermission("yone.mag.op")){
+            sender.sendMessage("§4You do not have permission");
+            return;
+        }
         switch (label) {
             case "magg":
                 if (!(sender instanceof Player)){
                     sender.sendMessage("§4Execute this command from the player");
-                    return true;
+                    return;
                 }
                 Player player = (Player) sender;
                 PlayerInventory inventory = player.getInventory();
@@ -42,13 +73,13 @@ public final class Man10AbilityGrant extends JavaPlugin {
                 ItemStack itemStack = inventory.getItem(mainHand);
                 if (itemStack == null) {
                     player.sendMessage("§4You don't have item in hand");
-                    return true;
+                    return;
                 }
                 net.minecraft.server.v1_12_R1.ItemStack itemStack2 = CraftItemStack.asNMSCopy(itemStack);
                 NBTTagCompound compound = (itemStack2.hasTag()) ? itemStack2.getTag() : new NBTTagCompound();
                 if (compound == null){
                     player.sendMessage("§7There was an error, please try again");
-                    return true;
+                    return;
                 }
                 int i = 0;
                 boolean e = true;
@@ -91,26 +122,28 @@ public final class Man10AbilityGrant extends JavaPlugin {
                 inventory.setItem(mainHand, itemStack);
                 break;
             case "mag":
-                sender.sendMessage("§e§lmaggコマンドの使い方");
+                sender.sendMessage("§e§l/magコマンドの使い方");
                 //ここに付与効果の説明の詳細
+                sender.sendMessage("§eメインコマンド/mag go [引数]");
                 sender.sendMessage("§e・不可懐と不可懐隠し→b");
                 sender.sendMessage("§e・エンチャ隠し→e");
                 sender.sendMessage("§e・能力隠し→a");
                 sender.sendMessage("§e引数を何も書かないと、全て表示されるようになります");
                 sender.sendMessage("§eコマンドの実行二回目以降は上書きです");
                 sender.sendMessage("§e同じ引数を2回以上使った場合一つ目のみ動作します");
-                sender.sendMessage("§e/magp <プレイヤー名> [maggコマンドの引数]… で遠隔実行ができます");
-                sender.sendMessage("§e/magg、/magpコマンドは対象のプレイヤーのホットバーの一番左でしか実行できません");
+                sender.sendMessage("§e/mag player <プレイヤー名> [mag goコマンドの引数]… で遠隔実行ができます");
+                sender.sendMessage("§e/mag id <プレイヤー名> <耐久値> [mag goコマンドの引数]…");
+                sender.sendMessage("§eで対象のアイテム(複数個あれば複数)に付与できます");
                 break;
             case "magp":
                 if (args.length == 0){
                     sender.sendMessage("§7Command usage: /magp <player name> [magg command argument]…");
-                    return true;
+                    return;
                 }
                 Player goPlayer = Bukkit.getServer().getPlayer(args[0]);
                 if (goPlayer == null){
                     sender.sendMessage("§7No target player found");
-                    return true;
+                    return;
                 }
                 String[] args2 = new String[args.length - 1];
                 System.arraycopy(args, 1, args2, 0, args.length - 1);
@@ -120,12 +153,12 @@ public final class Man10AbilityGrant extends JavaPlugin {
             case "magi":///magi <プレイヤー> <耐久値> [引数abe]
                 if (args.length <= 1){
                     sender.sendMessage("§7Command usage: /magi <player name> <durable value> [argument a b e]");
-                    return true;
+                    return;
                 }
                 Player executePlayer = Bukkit.getServer().getPlayer(args[0]);
                 if (executePlayer == null){
                     sender.sendMessage("§7No target player found");
-                    return true;
+                    return;
                 }
                 int durableInt = int1562(Integer.parseInt(args[1]));
                 durableInt -= 1;
@@ -148,7 +181,7 @@ public final class Man10AbilityGrant extends JavaPlugin {
                 }
                 if (diamondHoes.isEmpty()){
                     sender.sendMessage("§7No targets found");
-                    return true;
+                    return;
                 }
                 //ここから作業：diamondHoesがitemStackList
                 int i2 = 0;
@@ -202,7 +235,6 @@ public final class Man10AbilityGrant extends JavaPlugin {
                 sender.sendMessage("§7All done! "+ diamondHoes.size() +" completed");
                 break;
         }
-        return true;
     }
     private int int1562(int i){
         return 1562 - i;
